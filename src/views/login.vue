@@ -1,4 +1,5 @@
 <template>
+  <!--  改了改了-->
   <div class="login" :style="'background-image:url('+ Background +');'">
     <el-form ref="loginForm" :model="loginForm" :rules="loginRules" label-position="left" label-width="0px" class="login-form">
       <h3 class="title">
@@ -31,7 +32,39 @@
           <span v-else>登 录 中...</span>
         </el-button>
       </el-form-item>
+      <el-form-item style="width:100%;">
+        <el-button size="medium" type="primary" style="width:100%;" @click.native.prevent="showRegisterForm">
+          注册
+        </el-button>
+      </el-form-item>
     </el-form>
+    <!--  注册模块 -->
+    <el-dialog :visible.sync="registerVisible" title="注册" width="30%">
+      <el-form ref="registerForm" :model="registerForm" :rules="registerRules" label-width="100px">
+        <el-form-item label="User ID" prop="userId">
+          <el-input v-model="registerForm.userId" placeholder="请输入User ID" />
+        </el-form-item>
+        <el-form-item label="Username" prop="username">
+          <el-input v-model="registerForm.username" placeholder="请输入用户名" />
+        </el-form-item>
+        <el-form-item label="Password" prop="password">
+          <el-input v-model="registerForm.password" type="password" placeholder="请输入密码" />
+        </el-form-item>
+        <el-form-item label="Email" prop="email">
+          <el-input v-model="registerForm.email" placeholder="请输入邮箱" />
+        </el-form-item>
+        <el-form-item label="Phone" prop="phone">
+          <el-input v-model="registerForm.phone" placeholder="请输入电话号码" />
+        </el-form-item>
+        <el-form-item label="手机验证码" prop="phoneVerificationCode">
+          <el-input v-model="registerForm.phoneVerificationCode" placeholder="请输入手机验证码" />
+        </el-form-item>
+        <el-form-item>
+          <el-button type="primary" @click="register">注册</el-button>
+          <el-button @click="resetForm('registerForm')">重置</el-button>
+        </el-form-item>
+      </el-form>
+    </el-dialog>
     <!--  底部  -->
     <div v-if="$store.state.settings.showFooter" id="el-login-footer">
       <span v-html="$store.state.settings.footerTxt" />
@@ -68,7 +101,27 @@ export default {
         code: [{ required: true, trigger: 'change', message: '验证码不能为空' }]
       },
       loading: false,
-      redirect: undefined
+      redirect: undefined,
+      registerVisible: false,
+      registerForm: {
+        userId: '',
+        username: '',
+        password: '',
+        email: '',
+        phone: '',
+        phoneVerificationCode: ''
+      },
+      registerRules: {
+        userId: [{ required: true, message: '请输入User ID', trigger: 'blur' }],
+        username: [{ required: true, message: '请输入用户名', trigger: 'blur' }],
+        password: [{ required: true, message: '请输入密码', trigger: 'blur' }],
+        email: [
+          { required: true, message: '请输入邮箱', trigger: 'blur' },
+          { type: 'email', message: '请输入正确的邮箱地址', trigger: ['blur', 'change'] }
+        ],
+        phone: [{ required: true, message: '请输入电话号码', trigger: 'blur' }],
+        phoneVerificationCode: [{ required: true, message: '请输入手机验证码', trigger: 'blur' }]
+      }
     }
   },
   watch: {
@@ -87,11 +140,8 @@ export default {
     }
   },
   created() {
-    // 获取验证码
     this.getCode()
-    // 获取用户名密码等Cookie
     this.getCookie()
-    // token 过期提示
     this.point()
   },
   methods: {
@@ -105,7 +155,6 @@ export default {
       const username = Cookies.get('username')
       let password = Cookies.get('password')
       const rememberMe = Cookies.get('rememberMe')
-      // 保存cookie里面的加密后的密码
       this.cookiePass = password === undefined ? '' : password
       password = password === undefined ? this.loginForm.password : password
       this.loginForm = {
@@ -162,53 +211,74 @@ export default {
         })
         Cookies.remove('point')
       }
+    },
+    showRegisterForm() {
+      this.registerVisible = true
+    },
+    resetForm(formName) {
+      this.$refs[formName].resetFields()
+    },
+    register() {
+      this.$refs.registerForm.validate(valid => {
+        if (valid) {
+          // You can handle registration logic here
+          console.log('Registration successful!', this.registerForm)
+          // After successful registration, you can redirect the user or perform other actions
+          // For example, redirecting to the login page:
+          this.registerVisible = false
+          this.$message.success('注册成功，请登录')
+        } else {
+          console.log('Form validation failed')
+          return false
+        }
+      })
     }
   }
 }
 </script>
 
 <style rel="stylesheet/scss" lang="scss">
-  .login {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100%;
-    background-size: cover;
-  }
-  .title {
-    margin: 0 auto 30px auto;
-    text-align: center;
-    color: #707070;
-  }
+.login {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  background-size: cover;
+}
+.title {
+  margin: 0 auto 30px auto;
+  text-align: center;
+  color: #707070;
+}
 
-  .login-form {
-    border-radius: 6px;
-    background: #ffffff;
-    width: 385px;
-    padding: 25px 25px 5px 25px;
-    .el-input {
-      height: 38px;
-      input {
-        height: 38px;
-      }
-    }
-    .input-icon{
-      height: 39px;width: 14px;margin-left: 2px;
-    }
-  }
-  .login-tip {
-    font-size: 13px;
-    text-align: center;
-    color: #bfbfbf;
-  }
-  .login-code {
-    width: 33%;
-    display: inline-block;
+.login-form {
+  border-radius: 6px;
+  background: #ffffff;
+  width: 385px;
+  padding: 25px 25px 5px 25px;
+  .el-input {
     height: 38px;
-    float: right;
-    img{
-      cursor: pointer;
-      vertical-align:middle
+    input {
+      height: 38px;
     }
   }
+  .input-icon{
+    height: 39px;width: 14px;margin-left: 2px;
+  }
+}
+.login-tip {
+  font-size: 13px;
+  text-align: center;
+  color: #bfbfbf;
+}
+.login-code {
+  width: 33%;
+  display: inline-block;
+  height: 38px;
+  float: right;
+  img{
+    cursor: pointer;
+    vertical-align:middle
+  }
+}
 </style>
