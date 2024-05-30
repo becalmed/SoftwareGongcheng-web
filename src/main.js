@@ -1,5 +1,7 @@
+// 导入App.vue，基于App.vue创建结构渲染index.html
+// 1、导入Vue核心包
 import Vue from 'vue'
-
+// 2、导入根组件
 import Cookies from 'js-cookie'
 
 import 'normalize.css/normalize.css'
@@ -32,7 +34,7 @@ Vue.use(Element, {
 })
 
 Vue.config.productionTip = false
-
+// 3、Vue实例化，提供render方法->基于App.vue创建结构渲染index.html
 new Vue({
   el: '#app',
   router,

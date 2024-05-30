@@ -1,4 +1,5 @@
 <template>
+  <!--  增加了组件-->
   <div class="app-container">
     <!--工具栏-->
     <div class="head-container">
@@ -38,16 +39,26 @@
             <el-input v-model="form.createBy" style="width: 370px;" />
           </el-form-item>
           <el-form-item label="开始日期" prop="startTime">
-            <el-input v-model="form.startTime" style="width: 370px;" />
+            <el-date-picker v-model="form.startTime" type="date" placeholder="选择开始日期" style="width: 370px;" />
           </el-form-item>
           <el-form-item label="开始时刻" prop="startHour">
-            <el-input v-model="form.startHour" style="width: 370px;" />
+            <el-time-select
+              v-model="form.startHour"
+              :picker-options="timePickerOptions"
+              placeholder="选择开始时刻"
+              style="width: 370px;"
+            />
           </el-form-item>
           <el-form-item label="结束日期" prop="endTime">
-            <el-input v-model="form.endTime" style="width: 370px;" />
+            <el-date-picker v-model="form.endTime" type="date" placeholder="选择结束日期" style="width: 370px;" />
           </el-form-item>
           <el-form-item label="结束时刻" prop="endHour">
-            <el-input v-model="form.endHour" style="width: 370px;" />
+            <el-time-select
+              v-model="form.endHour"
+              :picker-options="timePickerOptions"
+              placeholder="选择结束时刻"
+              style="width: 370px;"
+            />
           </el-form-item>
           <el-form-item label="参与者列表">
             未设置字典，请手动设置 Select
@@ -147,7 +158,12 @@ export default {
         { key: 'createBy', display_name: '创建者' },
         { key: 'updateBy', display_name: '更新者' },
         { key: 'participants', display_name: '参与者列表' }
-      ]
+      ],
+      timePickerOptions: {
+        start: '08:30',
+        step: '00:15',
+        end: '18:30'
+      }
     }
   },
   methods: {

@@ -57,7 +57,21 @@ export const constantRouterMap = [
         meta: { title: '个人中心' }
       }
     ]
+  },
+  {
+    path: '/activity',
+    component: Layout,
+    redirect: '/activity/list',
+    children: [
+      {
+        path: 'list',
+        component: () => import('@/views/system/activity/index'),
+        name: 'ActivityList',
+        meta: { title: '活动管理', icon: 'activity' }
+      }
+    ]
   }
+
 ]
 
 export default new Router({
