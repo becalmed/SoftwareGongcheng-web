@@ -12,6 +12,8 @@
         <el-input v-model="query.createBy" clearable placeholder="创建者" style="width: 185px;" class="filter-item" @keyup.enter.native="crud.toQuery" />
         <label class="el-form-item-label">更新者</label>
         <el-input v-model="query.updateBy" clearable placeholder="更新者" style="width: 185px;" class="filter-item" @keyup.enter.native="crud.toQuery" />
+        <label class="el-form-item-label">参与者列表</label>
+        <el-input v-model="query.participants" clearable placeholder="参与者列表" style="width: 185px;" class="filter-item" @keyup.enter.native="crud.toQuery" />
         <rrOperation :crud="crud" />
       </div>
       <!--如果想在工具栏加入更多按钮，可以使用插槽方式， slot = 'left' or 'right'-->
@@ -35,6 +37,24 @@
           <el-form-item label="创建者" prop="createBy">
             <el-input v-model="form.createBy" style="width: 370px;" />
           </el-form-item>
+          <el-form-item label="开始日期" prop="startTime">
+            <el-input v-model="form.startTime" style="width: 370px;" />
+          </el-form-item>
+          <el-form-item label="开始时刻" prop="startHour">
+            <el-input v-model="form.startHour" style="width: 370px;" />
+          </el-form-item>
+          <el-form-item label="结束日期" prop="endTime">
+            <el-input v-model="form.endTime" style="width: 370px;" />
+          </el-form-item>
+          <el-form-item label="结束时刻" prop="endHour">
+            <el-input v-model="form.endHour" style="width: 370px;" />
+          </el-form-item>
+          <el-form-item label="参与者列表">
+            未设置字典，请手动设置 Select
+          </el-form-item>
+          <el-form-item label="资源需求列表">
+            未设置字典，请手动设置 Select
+          </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
           <el-button type="text" @click="crud.cancelCU">取消</el-button>
@@ -53,6 +73,12 @@
         <el-table-column prop="createBy" label="创建者" />
         <el-table-column prop="createTime" label="创建时间" />
         <el-table-column prop="updateTime" label="更新时间" />
+        <el-table-column prop="startTime" label="开始日期" />
+        <el-table-column prop="startHour" label="开始时刻" />
+        <el-table-column prop="endTime" label="结束日期" />
+        <el-table-column prop="endHour" label="结束时刻" />
+        <el-table-column prop="participants" label="参与者列表" />
+        <el-table-column prop="resourceRequirements" label="资源需求列表" />
         <el-table-column v-if="checkPer(['admin','sysActivity:edit','sysActivity:del'])" label="操作" width="150px" align="center">
           <template slot-scope="scope">
             <udOperation
@@ -76,7 +102,7 @@ import crudOperation from '@crud/CRUD.operation'
 import udOperation from '@crud/UD.operation'
 import pagination from '@crud/Pagination'
 
-const defaultForm = { activityId: null, activityName: null, activityProgress: null, createBy: null, updateBy: null, createTime: null, updateTime: null }
+const defaultForm = { activityId: null, activityName: null, activityProgress: null, createBy: null, updateBy: null, createTime: null, updateTime: null, startTime: null, startHour: null, endTime: null, endHour: null, participants: null, resourceRequirements: null }
 export default {
   name: 'SysActivity',
   components: { pagination, crudOperation, rrOperation, udOperation },
@@ -101,13 +127,26 @@ export default {
         ],
         createBy: [
           { required: true, message: '创建者不能为空', trigger: 'blur' }
+        ],
+        startTime: [
+          { required: true, message: '开始日期不能为空', trigger: 'blur' }
+        ],
+        startHour: [
+          { required: true, message: '开始时刻不能为空', trigger: 'blur' }
+        ],
+        endTime: [
+          { required: true, message: '结束日期不能为空', trigger: 'blur' }
+        ],
+        endHour: [
+          { required: true, message: '结束时刻不能为空', trigger: 'blur' }
         ]
       },
       queryTypeOptions: [
         { key: 'activityName', display_name: '活动名称' },
         { key: 'activityProgress', display_name: '活动类型' },
         { key: 'createBy', display_name: '创建者' },
-        { key: 'updateBy', display_name: '更新者' }
+        { key: 'updateBy', display_name: '更新者' },
+        { key: 'participants', display_name: '参与者列表' }
       ]
     }
   },
